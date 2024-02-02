@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Class-Path: byte-buddy-1.11.21.jar
+

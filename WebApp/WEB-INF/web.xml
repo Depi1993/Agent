@@ -1,0 +1,4 @@
+<!-- HelloWorldApp/WEB-INF/web.xml -->
+<web-app>
+    <display-name>WebApp</display-name>
+</web-app>

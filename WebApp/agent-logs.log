@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2024-02-02T03:26:42.228145Z</date>
+  <millis>1706844402228</millis>
+  <nanos>145000</nanos>
+  <sequence>0</sequence>
+  <logger>MethodListingAgent</logger>
+  <level>INFO</level>
+  <class>MethodListingAgent</class>
+  <method>premain</method>
+  <thread>1</thread>
+  <message>!212</message>
+</record>
+</log>
