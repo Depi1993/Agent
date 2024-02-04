@@ -1,30 +1,38 @@
 import jdk.jfr.consumer.RecordedEvent;
 import jdk.jfr.consumer.RecordingFile;
-
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 
-public class JFRAnalyzer {
+public class JFRFileExtractor {
 
     public static void main(String[] args) {
-        // Replace "path/to/your/recording.jfr" with the actual path to your JFR file
-        String jfrFilePath = "path/to/your/recording.jfr";
+        // Replace "path/to/your/recording.jfr" with the path to your JFR file
+        String filePath = "path/to/your/recording.jfr";
 
         try {
-            // Open the JFR file for reading
-            try (RecordingFile recordingFile = new RecordingFile(Path.of(jfrFilePath))) {
+            // Open the JFR file
+            File file = new File(filePath);
+            try (RecordingFile recordingFile = new RecordingFile(file.toPath())) {
 
-                // Iterate through the events in the recording file
+                // Iterate over events in the JFR file
                 while (recordingFile.hasMoreEvents()) {
-                    // Read the next recorded event
                     RecordedEvent event = recordingFile.readEvent();
 
-                    // Extract class and method information from the event
-                    String className = event.getValue("class").toString();
-                    String methodName = event.getValue("method").toString();
+                    // Check if the event is an execution sample event
+                    if ("jdk.ExecutionSample".equals(event.getEventType().getName())) {
+                        // Extract class and method information from the stack trace
+                        StackTraceElement[] stackTrace = event.getStackTrace();
+                        if (stackTrace.length > 0) {
+                            StackTraceElement topFrame = stackTrace[0];
+                            String className = topFrame.getClassName();
+                            String methodName = topFrame.getMethodName();
 
-                    // Print or process the class and method information as needed
-                    System.out.println("Class: " + className + ", Method: " + methodName);
+                            // Print class and method information
+                            System.out.println("Class: " + className);
+                            System.out.println("Method: " + methodName);
+                            System.out.println();
+                        }
+                    }
                 }
             }
         } catch (IOException e) {
