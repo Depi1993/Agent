@@ -21,9 +21,9 @@ public class JFRFileExtractor {
                     // Check if the event is an execution sample event
                     if ("jdk.ExecutionSample".equals(event.getEventType().getName())) {
                         // Extract class and method information from the stack trace
-                        StackTraceElement[] stackTrace = event.getStackTrace();
-                        if (stackTrace.length > 0) {
-                            StackTraceElement topFrame = stackTrace[0];
+                                RecordedStackTrace recordedStackTrace = event.getStackTrace();
+                        if (recordedStackTrace != null && recordedStackTrace.getFrames().size() > 0) {
+                            RecordedStackTrace.StackFrame topFrame = recordedStackTrace.getFrames().get(0);
                             String className = topFrame.getClassName();
                             String methodName = topFrame.getMethodName();
 
