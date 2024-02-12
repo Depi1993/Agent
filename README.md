@@ -40,3 +40,65 @@ public class JFRFileExtractor {
         }
     }
 }
+
+
+
+
+//------
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.openjdk.jmc.common.item.IItem;
+import org.openjdk.jmc.common.item.IItemCollection;
+import org.openjdk.jmc.common.item.IItemIterable;
+import org.openjdk.jmc.flightrecorder.CouldNotLoadRecordingException;
+import org.openjdk.jmc.flightrecorder.JfrLoaderToolkit;
+
+public class JFRClassUsageAnalyzer {
+
+    public static void main(String[] args) {
+
+        String jfrFilePath = "/Users/deepakdhaka/Downloads/basic.jfr";
+        Path jfrPath = Paths.get(jfrFilePath);
+        File jfrFile = jfrPath.toFile();
+
+        try {
+            IItemCollection items = JfrLoaderToolkit.loadEvents(jfrFile);
+            Set<String> classesUsed = extractUsedClasses(items);
+
+            // Print the classes used
+            classesUsed.forEach(System.out::println);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (CouldNotLoadRecordingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static Set<String> extractUsedClasses(IItemCollection items) {
+        Set<String> classesUsed = new HashSet<>();
+        Set<String> classesUsed1 = new HashSet<>();
+        for (IItemIterable item : items) {
+            if ("jdk.ClassLoad".equals(item.getType().getIdentifier())) {
+                classesUsed.add(item.getType().getIdentifier());
+            }
+
+        }
+        items.forEach(item -> {
+            if ("jdk.ClassLoad".equals(item.getType().getIdentifier())) {
+                item.get().forEach(loadedClass -> {
+                    String className =  loadedClass.toString();
+                    classesUsed1.add(className);
+                });
+            }
+        });
+        return classesUsed;
+    }
+}
+
